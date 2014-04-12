@@ -1,0 +1,32 @@
+#!/bin/bash
+INTERVAL="30m"
+while :
+do
+	echo "Waiting $INTERVAL..."
+	sleep $INTERVAL
+	(x=0;while :; do x=`expr $x + 1`; echo $x; sleep 0.1s; done) | zenity --progress --auto-close --text="It has been $INTERVAL since you last saved your data.\nWe recommend that you save data now to prevent any possible data loss.\nData will automatically be saved in a few seconds.\n\nClick Cancel now if you do not wish to save data." --title="Save Data"
+	if [ "$?" = "0" ]; then
+		echo "Showing saving notification..."
+		exec 3> >(zenity --notification --text='Saving, please wait... (Do NOT power down your computer!)' --title="Saving data..." 2>/dev/null)
+		echo $! > /tmp/zen.pid
+		sync
+		kill `cat /tmp/zen.pid 2>/dev/null` 2>/dev/null
+		rm -f /tmp/zen.pid
+
+		sleep 5s
+		
+		echo "Showing completion notification..."
+		exec 3> >(zenity --notification --text='Data has been successfully saved! This will close in 5 seconds.' --title='Data saved!' 2>/dev/null)
+		echo $! > /tmp/zen.pid
+		p=0
+		while :; do
+			echo "  => Closing in "`expr 5 - $p`" seconds..."
+			p=`expr $p + 1`
+			sleep 1s
+			if [ "$p" = "6" ];then
+				kill `cat /tmp/zen.pid 2>/dev/null` 2>/dev/null;
+				break
+			fi
+		done
+	fi
+done

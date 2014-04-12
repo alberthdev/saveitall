@@ -1,0 +1,4 @@
+#!/bin/bash
+(sync; echo 100) | zenity --progress --no-cancel --auto-close --pulsate --text='Please wait...\n(Do NOT power down your computer!)' --title="Saving data..."
+(p=0; while :; do echo $p; p=`expr $p + 10`; sleep 1s; done) | zenity --progress --auto-close --no-cancel --text='Data has been successfully saved!\nRun this every so often to ensure your data is safe!\n\nThis will close in 10 seconds.' --title='Data saved!'
+

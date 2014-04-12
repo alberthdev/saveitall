@@ -1,0 +1,12 @@
+#!/bin/bash
+INTERVAL="30m"
+while :
+do
+	echo "Waiting $INTERVAL..."
+	sleep $INTERVAL
+	(x=0;while :; do x=`expr $x + 1`; echo $x; sleep 0.1s; done) | zenity --progress --auto-close --text="It has been $INTERVAL since you last saved your data.\nWe recommend that you save data now to prevent any possible data loss.\nData will automatically be saved in a few seconds.\n\nClick Cancel now if you do not wish to save data." --title="Save Data"
+	if [ "$?" = "0" ]; then
+		(sync; echo 100) | zenity --progress --no-cancel --auto-close --pulsate --text='Please wait...\n(Do NOT power down your computer!)' --title="Saving data..."
+		(p=0; while :; do echo $p; p=`expr $p + 20`; sleep 1s; done) | zenity --progress --auto-close --no-cancel --text='Data has been successfully saved!\n\nThis will close in 5 seconds.' --title='Data saved!'
+	fi
+done
