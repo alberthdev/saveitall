@@ -72,3 +72,7 @@ some performance problems. This is due to those programs running saves manually 
 own accord. If you encounter problems, try disabling the auto-save functions or caching
 functions to speed things up.
 
+Future
+-------
+In the near future, a general setup tool will be provided. Stay tuned!
+
